@@ -13,6 +13,9 @@ const envSchema = z.object({
     .default(4000)
     .refine((n) => n > 0),
   DATABASE_URL: z.string(),
+  JWT_SECRET: z.string(),
+  COOKIE_SECRET: z.string(),
+  CORS_ORIGIN: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

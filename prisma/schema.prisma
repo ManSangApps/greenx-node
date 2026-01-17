@@ -1,0 +1,21 @@
+// prisma/schema.prisma
+// Define your database models
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Example models
+
+model User {
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  name          String
+  phone         String?
+  password_hash String
+}

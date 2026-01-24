@@ -54,10 +54,10 @@ router.post("/register", validateBody(registerSchema), AuthController.register);
  *             properties:
  *               email:
  *                 type: string
- *                 example: test@example.com
+ *                 example: henish@greenx.com
  *               password:
  *                 type: string
- *                 example: password123
+ *                 example: Test123@
  *     responses:
  *       200:
  *         description: User logged in successfully

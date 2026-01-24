@@ -24,10 +24,23 @@ export async function upstoxExchangeToken(
 
   const data = response.data;
 
+  const expireIn = Number(data.expires_in);
+
+  console.log("Upstox:", {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token ?? null,
+    expireAt: Number.isFinite(expireIn)
+      ? new Date(Date.now() + expireIn * 1000)
+      : undefined,
+    brokerUserId: data.user_id,
+  });
+
   return {
     accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    expiresAt: new Date(Date.now() + data.expires_in * 1000),
+    refreshToken: data.refresh_token ?? null,
+    expireAt: Number.isFinite(expireIn)
+      ? new Date(Date.now() + expireIn * 1000)
+      : undefined,
     brokerUserId: data.user_id,
   };
 }

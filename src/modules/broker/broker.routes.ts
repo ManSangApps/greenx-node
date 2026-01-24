@@ -9,8 +9,8 @@ const router = Router();
 
 /**
  * @swagger
- * /broker/{broker}/connect:
- * get:
+ * /api/v1/broker/{broker}/connect:
+ *   get:
  *     summary: Redirect user to broker OAuth login
  *     tags:
  *       - Broker
@@ -34,7 +34,7 @@ router.get("/:broker/connect", requireAuth, brokerConnectController);
 
 /**
  * @swagger
- * /broker/{broker}/callback:
+ * /api/v1/broker/{broker}/callback:
  *   get:
  *     summary: Broker OAuth callback
  *     tags:

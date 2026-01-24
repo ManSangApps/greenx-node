@@ -17,6 +17,7 @@ export async function getBrokerAuthUrl(
   userId: number,
 ) {
   const adapter = getBrokerAdapter(broker);
+  console.log("adapter", adapter);
   return adapter.getAuthUrl(String(userId));
 }
 
@@ -37,8 +38,8 @@ export async function connectBrokerAccount(
     },
     update: {
       accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-      tokenExpireAt: token.expiresAt,
+      refreshToken: token.refreshToken ?? null,
+      tokenExpireAt: token.expireAt ?? null,
       brokerUserId: token.brokerUserId,
       isActive: true,
     },
@@ -46,8 +47,8 @@ export async function connectBrokerAccount(
       userId,
       broker,
       accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-      tokenExpireAt: token.expiresAt,
+      refreshToken: token.refreshToken ?? null,
+      tokenExpireAt: token.expireAt ?? null,
       brokerUserId: token.brokerUserId,
     },
   });

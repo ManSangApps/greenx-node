@@ -8,6 +8,6 @@ export interface BrokerOAuthAdapter {
 export interface BrokerTokenPayload {
   accessToken: string;
   refreshToken?: string;
-  expiresAt?: Date;
+  expireAt?: Date;
   brokerUserId?: string;
 }

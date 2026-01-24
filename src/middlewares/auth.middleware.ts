@@ -1,19 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { env } from "../config/env";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { ApiResponse } from "../utils/apiResponse";
 
 const JWT_SECRET = env.JWT_SECRET!;
 
-export interface AuthRequest extends Request {
-  userId?: string;
-}
-
-export function requireAuth(
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) {
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const authHeader = req.headers.authorization;
 
@@ -28,9 +20,9 @@ export function requireAuth(
 
     const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
-    req.userId = decoded.userId;
+    req.user = decoded;
 
     next();
   } catch (error) {

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { registerSchema, loginSchema } from "./auth.schema";
 import { AuthService } from "./auth.service";
 import { ApiResponse } from "../../utils/apiResponse";
-import { AuthRequest } from "../../middlewares/auth.middleware";
 
 export class AuthController {
   // TODO: Implement register logic
@@ -53,9 +52,9 @@ export class AuthController {
     }
   }
 
-  static async getUser(req: AuthRequest, res: Response) {
+  static async getUser(req: Request, res: Response) {
     try {
-      const userId = req.userId!;
+      const userId = req.user.id!;
 
       const user = await AuthService.getUser(userId);
 

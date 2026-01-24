@@ -3,9 +3,27 @@ import { requireAuth } from "../../middlewares/auth.middleware";
 import {
   brokerCallbackController,
   brokerConnectController,
+  getBrokerAccountsController,
 } from "./broker.controller";
 
 const router = Router();
+
+/**
+ * @swagger
+ * /api/v1/broker/accounts:
+ *   get:
+ *     summary: Get connected broker accounts
+ *     tags:
+ *       - Broker
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of connected brokers
+ *       401:
+ *         description: Unauthorized
+ */
+router.get("/accounts", requireAuth, getBrokerAccountsController);
 
 /**
  * @swagger
@@ -30,7 +48,7 @@ const router = Router();
  *       401:
  *         description: Unauthorized
  */
-router.get("/:broker/connect", requireAuth, brokerConnectController);
+router.get("/:broker/connect", brokerConnectController);
 
 /**
  * @swagger

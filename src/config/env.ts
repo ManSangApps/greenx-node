@@ -19,6 +19,7 @@ const envSchema = z.object({
   UPSTOX_CLIENT_ID: z.string(),
   UPSTOX_CLIENT_SECRET: z.string(),
   UPSTOX_REDIRECT_URI: z.string(),
+  OAUTH_STATE_SECRET: z.string(),
 });
 
 export const env = envSchema.parse(process.env);

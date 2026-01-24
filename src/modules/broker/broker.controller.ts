@@ -1,26 +1,45 @@
 import { Request, Response } from "express";
 import { brokerParamSchema, brokerCallBackSchema } from "./broker.schema";
-import { getBrokerAuthUrl, connectBrokerAccount } from "./broker.service";
+import {
+  getBrokerAuthUrl,
+  connectBrokerAccount,
+  getUserBrokerAccounts,
+} from "./broker.service";
 import { env } from "../../config/env";
 import { ApiError } from "../../utils/apiError";
 
+import jwt from "jsonwebtoken";
+
 export async function brokerConnectController(req: Request, res: Response) {
   const { broker } = brokerParamSchema.parse(req.params);
+  const { token } = req.query as { token?: string };
 
-  console.log("broker", broker);
-  console.log("req.user", req.user);
-
-  if (!req.user) {
+  if (!token) {
     throw new ApiError({
       statusCode: 401,
-      message: "Unauthorized",
+      message: "Missing auth token",
     });
   }
 
-  const userId = req.user.userId;
-  console.log("userId", userId);
-  const url = await getBrokerAuthUrl(broker, userId);
-  console.log("url", url);
+  let payload: { userId: number };
+
+  try {
+    payload = jwt.verify(token, env.JWT_SECRET) as { userId: number };
+  } catch {
+    throw new ApiError({
+      statusCode: 401,
+      message: "Invalid auth token",
+    });
+  }
+
+  const userId = payload.userId;
+
+  // 🔐 Encode userId into OAuth state
+  const state = jwt.sign({ userId }, env.OAUTH_STATE_SECRET, {
+    expiresIn: "5m",
+  });
+
+  const url = await getBrokerAuthUrl(broker, state);
   res.redirect(url);
 }
 
@@ -37,5 +56,28 @@ export async function brokerCallbackController(req: Request, res: Response) {
 
   res.redirect(
     `${env.FRONTEND_URL}/dashboard?broker=${broker}&status=connected`,
+  );
+}
+
+export async function getBrokerAccountsController(req: Request, res: Response) {
+  if (!req.user) {
+    throw new ApiError({
+      statusCode: 401,
+      message: "Unauthorized",
+    });
+  }
+
+  const userId = req.user.userId;
+
+  const accounts = await getUserBrokerAccounts(userId);
+  console.log("accounts", accounts);
+
+  res.json(
+    accounts.map((acc) => ({
+      broker: acc.broker,
+      brokerUserId: acc.brokerUserId,
+      isActive: acc.isActive,
+      connectedAt: acc.createdAt,
+    })),
   );
 }

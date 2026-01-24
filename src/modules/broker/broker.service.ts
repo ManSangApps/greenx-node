@@ -14,7 +14,7 @@ function getBrokerAdapter(broker: SupportedBrokers) {
 
 export async function getBrokerAuthUrl(
   broker: SupportedBrokers,
-  userId: number,
+  userId: string,
 ) {
   const adapter = getBrokerAdapter(broker);
   console.log("adapter", adapter);
@@ -50,6 +50,24 @@ export async function connectBrokerAccount(
       refreshToken: token.refreshToken ?? null,
       tokenExpireAt: token.expireAt ?? null,
       brokerUserId: token.brokerUserId,
+    },
+  });
+}
+
+export async function getUserBrokerAccounts(userId: number) {
+  return prisma.brokerAccount.findMany({
+    where: {
+      userId,
+      isActive: true,
+    },
+    select: {
+      broker: true,
+      brokerUserId: true,
+      isActive: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 }

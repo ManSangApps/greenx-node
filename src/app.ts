@@ -1,12 +1,15 @@
+import { env } from "./config/env";
+
 import express from "express";
-import authRoutes from "./modules/auth/auth.routes";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { env } from "./config/env";
+
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 
+import authRoutes from "./modules/auth/auth.routes";
+import brokerRoutes from "./modules/broker/broker.routes";
 const app = express();
 
 //Security Middleware
@@ -20,7 +23,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser(env.COOKIE_SECRET));
 
 // CORS Middleware
-const allowedOrigins = env.CORS_ORIGIN?.split(",") || [];
+const allowedOrigins = env.FRONTEND_URL?.split(",") || [];
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -63,5 +66,6 @@ app.get("/healthz", (_req, res) => {
 const apiPrefix = "/api/v1";
 
 app.use(`${apiPrefix}/auth`, authRoutes);
+app.use(`${apiPrefix}/broker`, brokerRoutes);
 
 export default app;

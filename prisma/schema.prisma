@@ -20,4 +20,26 @@ model User {
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  brokerAccounts brokerAccount[]
+}
+
+model brokerAccount {
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  broker       String //Zerodha, Upstox, AngelOne
+  brokerUserId String? //return by broker
+
+  accessToken   String
+  refreshToken  String?
+  tokenExpireAt DateTime?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, broker])
 }

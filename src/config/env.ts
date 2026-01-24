@@ -15,7 +15,10 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   JWT_SECRET: z.string(),
   COOKIE_SECRET: z.string(),
-  CORS_ORIGIN: z.string().optional(),
+  FRONTEND_URL: z.string().optional(),
+  UPSTOX_CLIENT_ID: z.string(),
+  UPSTOX_CLIENT_SECRET: z.string(),
+  UPSTOX_REDIRECT_URI: z.string(),
 });
 
 export const env = envSchema.parse(process.env);

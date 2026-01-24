@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node --files src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "postinstall": "npm run build",
@@ -22,6 +22,7 @@
     "@prisma/adapter-neon": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@prisma/extension-accelerate": "^3.0.1",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

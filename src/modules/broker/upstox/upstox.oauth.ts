@@ -26,15 +26,6 @@ export async function upstoxExchangeToken(
 
   const expireIn = Number(data.expires_in);
 
-  console.log("Upstox:", {
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token ?? null,
-    expireAt: Number.isFinite(expireIn)
-      ? new Date(Date.now() + expireIn * 1000)
-      : undefined,
-    brokerUserId: data.user_id,
-  });
-
   return {
     accessToken: data.access_token,
     refreshToken: data.refresh_token ?? null,

@@ -36,7 +36,7 @@ export async function brokerConnectController(req: Request, res: Response) {
 
   // 🔐 Encode userId into OAuth state
   const state = jwt.sign({ userId }, env.OAUTH_STATE_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "8h",
   });
 
   const url = await getBrokerAuthUrl(broker, state);
@@ -47,12 +47,11 @@ export async function brokerCallbackController(req: Request, res: Response) {
   const { broker } = brokerParamSchema.parse(req.params);
   const { code, state } = brokerCallBackSchema.parse(req.query);
 
-  await connectBrokerAccount(broker, Number(state), code);
+  const payload = jwt.verify(state, env.OAUTH_STATE_SECRET) as {
+    userId: number;
+  };
 
-  console.log(
-    "broker connected",
-    `${env.FRONTEND_URL}/dashboard?broker=${broker}&status=connected`,
-  );
+  await connectBrokerAccount(broker, payload.userId, code);
 
   res.redirect(
     `${env.FRONTEND_URL}/dashboard?broker=${broker}&status=connected`,
@@ -70,7 +69,6 @@ export async function getBrokerAccountsController(req: Request, res: Response) {
   const userId = req.user.userId;
 
   const accounts = await getUserBrokerAccounts(userId);
-  console.log("accounts", accounts);
 
   res.json(
     accounts.map((acc) => ({

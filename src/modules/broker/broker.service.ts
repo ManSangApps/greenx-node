@@ -17,7 +17,6 @@ export async function getBrokerAuthUrl(
   userId: string,
 ) {
   const adapter = getBrokerAdapter(broker);
-  console.log("adapter", adapter);
   return adapter.getAuthUrl(String(userId));
 }
 

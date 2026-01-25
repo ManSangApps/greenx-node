@@ -72,9 +72,18 @@ export class AuthService {
   }
 
   // User
-  static async getUser(userId: string) {
+  static async getUser(userId: string | number) {
+    const id = Number(userId);
+
+    if (!id || Number.isNaN(id)) {
+      throw new ApiError({
+        statusCode: 400,
+        message: "Invalid user id",
+      });
+    }
+
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(userId) },
+      where: { id },
       select: {
         id: true,
         email: true,
@@ -85,7 +94,10 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new ApiError({
+        statusCode: 404,
+        message: "User not found",
+      });
     }
 
     return user;

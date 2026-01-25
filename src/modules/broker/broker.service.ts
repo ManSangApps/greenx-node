@@ -68,5 +68,6 @@ export async function getUserBrokerAccounts(userId: number) {
     orderBy: {
       createdAt: "desc",
     },
+    take: 1,
   });
 }

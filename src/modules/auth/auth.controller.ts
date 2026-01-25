@@ -54,7 +54,16 @@ export class AuthController {
 
   static async getUser(req: Request, res: Response) {
     try {
-      const userId = req.user.id!;
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json(
+          new ApiResponse({
+            statusCode: 401,
+            message: "Unauthorized",
+          }),
+        );
+      }
 
       const user = await AuthService.getUser(userId);
 

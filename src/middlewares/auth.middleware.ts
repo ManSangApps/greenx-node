@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { env } from "../config/env";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { ApiResponse } from "../utils/apiResponse";
 
 const JWT_SECRET = env.JWT_SECRET!;
+
+// 🔑 Define your token payload shape
+interface TokenPayload {
+  userId: number;
+}
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
@@ -20,9 +25,11 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
     const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
 
-    req.user = decoded;
+    req.user = {
+      id: decoded.userId,
+    };
 
     next();
   } catch (error) {

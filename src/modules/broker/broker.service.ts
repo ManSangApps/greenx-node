@@ -1,5 +1,6 @@
 import prisma from "../../config/db";
 import { SupportedBrokers } from "./broker.types";
+import { DeltaAdapter } from "./delta/delta.adapter";
 import { UpstoxAdapter } from "./upstox/upstox.adapter";
 
 function getBrokerAdapter(broker: SupportedBrokers) {
@@ -49,6 +50,38 @@ export async function connectBrokerAccount(
       refreshToken: token.refreshToken ?? null,
       tokenExpireAt: token.expireAt ?? null,
       brokerUserId: token.brokerUserId,
+    },
+  });
+}
+
+export async function connectDeltaBrokerAccount(
+  userId: number,
+  apiKey: string,
+  apiSecret: string,
+) {
+  const adapter = new DeltaAdapter(apiKey, apiSecret);
+
+  const account = await adapter.getAccountInfo();
+
+  return prisma.brokerAccount.upsert({
+    where: {
+      userId_broker: {
+        userId,
+        broker: "delta",
+      },
+    },
+    update: {
+      accessToken: apiKey,
+      refreshToken: apiSecret, // ⚠️ encrypt later
+      brokerUserId: account.user_id,
+      isActive: true,
+    },
+    create: {
+      userId,
+      broker: "delta",
+      accessToken: apiKey,
+      refreshToken: apiSecret,
+      brokerUserId: account.user_id,
     },
   });
 }

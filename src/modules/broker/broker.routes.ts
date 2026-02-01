@@ -3,6 +3,7 @@ import { requireAuth } from "../../middlewares/auth.middleware";
 import {
   brokerCallbackController,
   brokerConnectController,
+  connectDeltaBrokerController,
   getBrokerAccountsController,
 } from "./broker.controller";
 
@@ -83,5 +84,34 @@ router.get("/:broker/connect", brokerConnectController);
  *         description: Invalid request
  */
 router.get("/:broker/callback", brokerCallbackController);
+
+/**
+ * @swagger
+ * /api/v1/broker/delta/connect:
+ *   post:
+ *     summary: Connect Delta Exchange using API keys
+ *     tags:
+ *       - Broker
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [apiKey, apiSecret]
+ *             properties:
+ *               apiKey:
+ *                 type: string
+ *               apiSecret:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Delta connected
+ *       401:
+ *         description: Unauthorized
+ */
+router.post("/delta/connect", requireAuth, connectDeltaBrokerController);
 
 export default router;

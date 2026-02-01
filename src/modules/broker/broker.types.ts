@@ -1,4 +1,4 @@
-export type SupportedBrokers = "upstox"; //Extend it later
+export type SupportedBrokers = "upstox" | "delta"; 
 
 export interface BrokerOAuthAdapter {
   getAuthUrl(state: string): string;

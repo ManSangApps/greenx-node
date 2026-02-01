@@ -29,6 +29,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
     req.user = {
       id: decoded.userId,
+      userId: decoded.userId,
     };
 
     next();

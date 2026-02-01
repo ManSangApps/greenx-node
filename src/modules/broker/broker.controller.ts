@@ -4,11 +4,13 @@ import {
   getBrokerAuthUrl,
   connectBrokerAccount,
   getUserBrokerAccounts,
+  connectDeltaBrokerAccount,
 } from "./broker.service";
 import { env } from "../../config/env";
 import { ApiError } from "../../utils/apiError";
 
 import jwt from "jsonwebtoken";
+import { ApiResponse } from "../../utils/apiResponse";
 
 export async function brokerConnectController(req: Request, res: Response) {
   const { broker } = brokerParamSchema.parse(req.params);
@@ -55,6 +57,39 @@ export async function brokerCallbackController(req: Request, res: Response) {
 
   res.redirect(
     `${env.FRONTEND_URL}/dashboard?broker=${broker}&status=connected`,
+  );
+}
+
+export async function connectDeltaBrokerController(
+  req: Request,
+  res: Response,
+) {
+  if (!req.user) {
+    throw new ApiError({
+      statusCode: 401,
+      message: "Unauthorized",
+    });
+  }
+
+  const { apiKey, apiSecret } = req.body as {
+    apiKey?: string;
+    apiSecret?: string;
+  };
+
+  if (!apiKey || !apiSecret) {
+    throw new ApiError({
+      statusCode: 400,
+      message: "Missing API key or secret",
+    });
+  }
+
+  await connectDeltaBrokerAccount(req.user.userId, apiKey, apiSecret);
+
+  res.json(
+    new ApiResponse({
+      statusCode: 200,
+      message: "Delta broker connected successfully",
+    }),
   );
 }
 

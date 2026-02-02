@@ -73,7 +73,7 @@ export async function connectDeltaBrokerAccount(
     update: {
       accessToken: apiKey,
       refreshToken: apiSecret, // ⚠️ encrypt later
-      brokerUserId: account.user_id,
+      brokerUserId: (account.id).toString(),
       isActive: true,
     },
     create: {
@@ -81,7 +81,7 @@ export async function connectDeltaBrokerAccount(
       broker: "delta",
       accessToken: apiKey,
       refreshToken: apiSecret,
-      brokerUserId: account.user_id,
+      brokerUserId: (account.id).toString(),
     },
   });
 }

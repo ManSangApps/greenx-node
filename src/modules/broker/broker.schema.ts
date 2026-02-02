@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const brokerParamSchema = z.object({
-  broker: z.enum(["upstox"]),
+  broker: z.enum(["upstox", "delta"]),
 });
 
 export const brokerCallBackSchema = z.object({
